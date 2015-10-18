@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "guard", "~> 2.6"
   spec.add_development_dependency "rb-inotify", "~> 0.9"
   spec.add_development_dependency "simplecov", "~> 0.9"
+  spec.add_development_dependency "gem-release", "~> 0.7"
 end
