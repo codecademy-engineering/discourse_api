@@ -10,6 +10,11 @@ module DiscourseApi
         response[:body]['user']
       end
 
+      def user_by_external_id(external_id, params = {})
+        response = get("/users/by-external/#{external_id}.json", params)
+        response[:body]['user']
+      end
+
       def user_sso(username)
         response = get("/admin/users/#{username.downcase}")
         response[:body]['single_sign_on_record']
