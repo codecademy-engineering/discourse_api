@@ -6,6 +6,7 @@ module DiscourseApi
 
     class Params
       def initialize(args)
+        raise ArgumentError.new("Required to be initialized with a Hash") unless args.is_a? Hash
         @args = args
         @required = []
         @optional = []
@@ -39,18 +40,12 @@ module DiscourseApi
           raise ArgumentError.new("#{k} is required but not specified") unless h[k]
         end
 
-        h =
-          if @optional.length == 0
-            @args.dup
-          else
-            @optional.each do |k|
-              h[k] = @args[k] if @args.include?(k)
-            end
-            h
-          end
+        @optional.each do |k|
+          h[k] = @args[k] if @args.include?(k)
+        end
 
         @defaults.each do |k,v|
-          h[k] = v unless h.key?(k)
+          @args.key?(k) ? h[k] = @args[k] : h[k] = v
         end
 
         h

@@ -1,3 +1,3 @@
 module DiscourseApi
-  VERSION = "0.4.5"
+  VERSION = "0.10.2"
 end
