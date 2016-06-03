@@ -4,11 +4,23 @@ module DiscourseApi
       # :category OPTIONAL name of category, not ID
       # :skip_validations OPTIONAL boolean
       # :auto_track OPTIONAL boolean
-      def create_topic(args)
+      # :created_at OPTIONAL seconds since epoch.
+      def create_topic(args={})
         args = API.params(args)
                   .required(:title, :raw)
-                  .optional(:skip_validations, :category, :auto_track)
+                  .optional(:skip_validations, :category, :auto_track, :created_at)
         post("/posts", args.to_h)
+      end
+
+      def create_topic_action(args)
+        args = API.params(args)
+                   .required(:id, :post_action_type_id)
+        post("/post_actions", args.to_h.merge(flag_topic: true))
+      end
+
+      # timestamp is seconds past the epoch.
+      def edit_topic_timestamp(topic_id,timestamp)
+        put("/t/#{topic_id}/change-timestamp", { timestamp: timestamp })
       end
 
       def latest_topics(params={})
@@ -41,6 +53,18 @@ module DiscourseApi
 
       def delete_topic(id)
         delete("/t/#{id}.json")
+      end
+
+      def topic_posts(topic_id, post_ids=[])
+        url = "/t/#{topic_id}/posts.json"
+        if post_ids.count > 0
+          url << '?'
+          post_ids.each do |id|
+            url << "post_ids[]=#{id}&"
+          end 
+        end
+        response = get(url) 
+        response[:body]
       end
     end
   end
