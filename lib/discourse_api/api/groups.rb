@@ -28,11 +28,11 @@ module DiscourseApi
           end
         end
 
-        put("/groups/#{group_id}/members.json", users)
+        put("/admin/groups/#{group_id}/members.json", users)
       end
 
       def group_remove(group_id, user)
-        delete("/groups/#{group_id}/members.json", user)
+        delete("/admin/groups/#{group_id}/members.json", user)
       end
 
       def delete_group(group_id)
