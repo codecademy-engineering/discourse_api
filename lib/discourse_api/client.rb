@@ -97,7 +97,7 @@ module DiscourseApi
     def connection
       @connection ||= Faraday.new connection_options do |conn|
         # Follow redirects
-        conn.use FaradayMiddleware::FollowRedirects, limit: 5
+        # conn.use FaradayMiddleware::FollowRedirects, limit: 5 
         # Convert request params to "www-form-encoded"
         conn.request :url_encoded
         # Parse responses as JSON
