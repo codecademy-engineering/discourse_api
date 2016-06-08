@@ -92,7 +92,7 @@ module DiscourseApi
       @user_agent ||= "DiscourseAPI Ruby Gem #{DiscourseApi::VERSION}"
     end
 
-    private
+    # private
 
     def connection
       @connection ||= Faraday.new connection_options do |conn|
