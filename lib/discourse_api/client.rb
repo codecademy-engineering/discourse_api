@@ -103,7 +103,7 @@ module DiscourseApi
         # Parse responses as JSON
         conn.use FaradayMiddleware::ParseJson, content_type: 'application/json'
         # Use Faraday's default HTTP adapter
-        conn.adapter Faraday.default_adapter
+        conn.adapter :net_http
         #pass api_key and api_username on every request
         unless api_username.nil?
           conn.params['api_key'] = api_key
