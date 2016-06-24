@@ -31,6 +31,8 @@ module DiscourseApi
       end
 
       def to_h
+        return @args
+
         h = {}
 
         @required.each do |k|
