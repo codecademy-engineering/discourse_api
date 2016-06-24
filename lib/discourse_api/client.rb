@@ -48,15 +48,15 @@ module DiscourseApi
       @api_username = api_username
     end
 
-    def connection_options
-      @connection_options ||= {
-        url: @host,
-        headers: {
-          accept: 'application/json',
-          user_agent: user_agent,
-        }
-      }
-    end
+    # def connection_options
+    #   @connection_options ||= {
+    #     url: @host,
+    #     headers: {
+    #       accept: 'application/json',
+    #       user_agent: user_agent,
+    #     }
+    #   }
+    # end
 
     def ssl(options)
       connection_options[:ssl] = options
@@ -95,21 +95,27 @@ module DiscourseApi
     # private
 
     def connection
-      @connection = Faraday.new connection_options do |conn|
+      connection_options = {
+        url: "https://discuss.codecademy.com",
+        headers: {
+          accept: 'application/json',
+          user_agent: "DiscourseAPI Ruby Gem 0.10.1",
+        }
+      }
+      connection = Faraday.new connection_options do |conn|
         # Follow redirects
-        conn.use FaradayMiddleware::FollowRedirects, limit: 5 
+        conn.use FaradayMiddleware::FollowRedirects, limit: 5
         # Convert request params to "www-form-encoded"
         conn.request :url_encoded
         # Parse responses as JSON
         conn.use FaradayMiddleware::ParseJson, content_type: 'application/json'
         # Use Faraday's default HTTP adapter
-        conn.adapter Faraday.default_adapter
+        conn.adapter :net_http
         #pass api_key and api_username on every request
-        unless api_username.nil?
-          conn.params['api_key'] = api_key
-          conn.params['api_username'] = api_username
-        end
+        conn.params['api_key'] = "d237ee4176eae53ca8489bde28421d79d35b2a9c8a94827b404fb679c68bbf75"
+        conn.params['api_username'] = "ryan"
       end
+      connection
     end
 
     def request(method, path, params={})
