@@ -17,6 +17,7 @@ require 'discourse_api/api/badges'
 require 'discourse_api/api/email'
 require 'discourse_api/api/api_key'
 require 'discourse_api/api/backups'
+require 'discourse_api/api/dashboard'
 
 module DiscourseApi
   class Client
@@ -38,12 +39,14 @@ module DiscourseApi
     include DiscourseApi::API::Email
     include DiscourseApi::API::ApiKey
     include DiscourseApi::API::Backups
+    include DiscourseApi::API::Dashboard
 
     def initialize(host, api_key = nil, api_username = nil)
       raise ArgumentError, 'host needs to be defined' if host.nil? || host.empty?
       @host         = host
       @api_key      = api_key
       @api_username = api_username
+      @connection   = nil
     end
 
     def connection_options
@@ -90,12 +93,12 @@ module DiscourseApi
       @user_agent ||= "DiscourseAPI Ruby Gem #{DiscourseApi::VERSION}"
     end
 
-    private
+    # private
 
     def connection
       @connection ||= Faraday.new connection_options do |conn|
         # Follow redirects
-        conn.use FaradayMiddleware::FollowRedirects, limit: 5
+        conn.use FaradayMiddleware::FollowRedirects, limit: 5 
         # Convert request params to "www-form-encoded"
         conn.request :url_encoded
         # Parse responses as JSON
@@ -103,8 +106,10 @@ module DiscourseApi
         # Use Faraday's default HTTP adapter
         conn.adapter Faraday.default_adapter
         #pass api_key and api_username on every request
-        conn.params['api_key'] = api_key
-        conn.params['api_username'] = api_username
+        unless api_username.nil?
+          conn.params['api_key'] = api_key
+          conn.params['api_username'] = api_username
+        end
       end
     end
 
